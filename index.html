@@ -7,6 +7,12 @@
   <script>
     document.getElementById('btn').onclick = async () => {
       const log = document.getElementById('log');
+      const cap = PublicKeyCredential.getClientCapabilities();
+      if (!cap["extension:crossDeviceFallbackUrl"]) {
+        log.textContent = 'Error: crossDeviceFallbackUrl extension not supported. Chrome users, enable the feature flag at chrome//:flags#web-authentication-cross-device-fallback-url';
+        return;
+      }
+
       log.textContent = 'Starting...';
       try {
         const fallbackUrl = new URL('fallback.html', window.location.href).href;
