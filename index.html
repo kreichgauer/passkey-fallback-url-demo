@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>WebAuthn crossDeviceFallbackUrl demo</h1>
+  <button id="btn">Get passkey maybe</button>
+  <pre id="log"></pre>
+  <script>
+    document.getElementById('btn').onclick = async () => {
+      const log = document.getElementById('log');
+      log.textContent = 'Starting...';
+      try {
+        const fallbackUrl = new URL('fallback.html', window.location.href).href;
+
+        const credential = await navigator.credentials.get({
+          publicKey: {
+            challenge: new Uint8Array(16),
+            rpId: window.location.hostname,
+            timeout: 60000,
+            extensions: {
+              crossDeviceFallbackUrl: fallbackUrl
+            }
+          }
+        });
+        log.textContent += `\nSuccess: ${credential.toJSON()}`;
+      } catch (err) {
+        log.textContent += `\nError: ${err.name} - ${err.message}`;
+      }
+    };
+  </script>
+</body>
+</html>
